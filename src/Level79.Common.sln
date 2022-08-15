@@ -1,0 +1,22 @@
+﻿
+Microsoft Visual Studio Solution File, Format Version 12.00
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Level79.Common", "Level79.Common\Level79.Common.csproj", "{497FC4E2-BC24-481A-888A-AA5CC38A1470}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Level79.Common.Test", "Level79.Common.Test\Level79.Common.Test.csproj", "{AAC8514D-F611-4BA5-A849-591913265574}"
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|Any CPU = Debug|Any CPU
+		Release|Any CPU = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{497FC4E2-BC24-481A-888A-AA5CC38A1470}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{497FC4E2-BC24-481A-888A-AA5CC38A1470}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{497FC4E2-BC24-481A-888A-AA5CC38A1470}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{497FC4E2-BC24-481A-888A-AA5CC38A1470}.Release|Any CPU.Build.0 = Release|Any CPU
+		{AAC8514D-F611-4BA5-A849-591913265574}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{AAC8514D-F611-4BA5-A849-591913265574}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{AAC8514D-F611-4BA5-A849-591913265574}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{AAC8514D-F611-4BA5-A849-591913265574}.Release|Any CPU.Build.0 = Release|Any CPU
+	EndGlobalSection
+EndGlobal
