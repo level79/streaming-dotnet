@@ -3,7 +3,7 @@ using Chr.Avro.Abstract;
 using Chr.Avro.Serialization;
 using Level79.Common.Reflection;
 
-namespace Level79.Common.EventStreaming.Consumption;
+namespace Level79.Common.EventStreaming.Consumption.Deserialization;
 
 public class ReflectionBinaryRecordDeserializerBuilderCase : BinaryRecordDeserializerBuilderCase
 {

@@ -1,7 +1,7 @@
 using Confluent.Kafka;
 using Confluent.SchemaRegistry;
 
-namespace Level79.Common.EventStreaming.Production;
+namespace Level79.Common.EventStreaming.Production.Serialization;
 
 public class AsyncSchemaRegistryGenericEventSerializer<T> : IAsyncSerializer<T> where T : IEvent
 {

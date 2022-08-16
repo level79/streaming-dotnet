@@ -3,8 +3,9 @@ using Chr.Avro.Confluent;
 using Chr.Avro.Serialization;
 using Confluent.Kafka;
 using Confluent.SchemaRegistry;
+using Level79.Common.EventStreaming.Production.SchemaBuilderCases;
 
-namespace Level79.Common.EventStreaming.Production;
+namespace Level79.Common.EventStreaming.Production.Serialization;
 
 public class AsyncSchemaRegistryEventSerializer<T> : IAsyncSerializer<T> where T : IEvent
 {
@@ -15,10 +16,13 @@ public class AsyncSchemaRegistryEventSerializer<T> : IAsyncSerializer<T> where T
     public AsyncSchemaRegistryEventSerializer(ISchemaRegistryClient schemaRegistry)
     {
         _subject = typeof(T).FullName?.ToLowerInvariant() ?? "UnknownSubject";
+
+        const TemporalBehavior temporalBehavior = TemporalBehavior.EpochMicroseconds;
         
         var schemaBuilder = new SchemaBuilder(
-            SchemaBuilder.CreateDefaultCaseBuilders()
-            .Prepend(builder => new InstantSchemaBuilderCase(TemporalBehavior.EpochMicroseconds))
+            SchemaBuilder.CreateDefaultCaseBuilders(temporalBehavior: temporalBehavior)
+            .Prepend(_ => new InstantSchemaBuilderCase(temporalBehavior))
+            .Prepend(_ => new LocalDateSchemaBuilderCase(temporalBehavior))
         );
 
         _serializerBuilder = new SchemaRegistrySerializerBuilder(
@@ -26,7 +30,8 @@ public class AsyncSchemaRegistryEventSerializer<T> : IAsyncSerializer<T> where T
             schemaBuilder,
             serializerBuilder: new BinarySerializerBuilder(
                 BinarySerializerBuilder.CreateDefaultCaseBuilders()
-                .Prepend(builder => new BinaryInstantSerializerBuilderCase())
+                .Prepend(_ => new BinaryInstantSerializerBuilderCase())
+                .Prepend(_ => new BinaryLocalDateSerializerBuilderCase())
             ));
     }
     public async Task<byte[]> SerializeAsync(T data, SerializationContext context)

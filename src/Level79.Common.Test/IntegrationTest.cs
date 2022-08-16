@@ -52,8 +52,8 @@ public abstract class IntegrationTest
         finally
         {
             stopwatch.Stop();
-            var elapsedSeconds = stopwatch.ElapsedMilliseconds / 1000;
-            var executionsPerSeconds = executions / (stopwatch.ElapsedMilliseconds / 1000);
+            var elapsedSeconds = stopwatch.ElapsedMilliseconds / 1000.0;
+            var executionsPerSeconds = executions / (stopwatch.ElapsedMilliseconds / 1000.0);
             Console.WriteLine($"Tests run {executions} times in {elapsedSeconds} seconds at {executionsPerSeconds} per second");
         }
     }

@@ -5,17 +5,17 @@ using Level79.Common.EventStreaming.Consumption;
 using Level79.Common.EventStreaming.Production;
 using NodaTime;
 using Shouldly;
-using Xunit;
 
 namespace Level79.Common.Test.EventStreaming;
 
-public class GivenAnEventWithNodaTimeTimestamps_ThenItCanBeProducedAndConsumed : IntegrationTest
+public class GivenAnEventWithNodatimeLocalDates_ThenItCanBeProducedAndConsumed : IntegrationTest
 {
-    private const string Topic = "testtimestamp";
+    private const string Topic = "testlocaldate";
+
     private readonly EventStreamProducer _eventStreamProducer;
     private readonly EventStreamConsumer _eventStreamConsumer;
 
-    public GivenAnEventWithNodaTimeTimestamps_ThenItCanBeProducedAndConsumed()
+    public GivenAnEventWithNodatimeLocalDates_ThenItCanBeProducedAndConsumed()
     {
         _eventStreamProducer = new EventStreamProducer();
         _eventStreamConsumer = new EventStreamConsumer();
@@ -26,29 +26,30 @@ public class GivenAnEventWithNodaTimeTimestamps_ThenItCanBeProducedAndConsumed :
         await _eventStreamConsumer.Subscribe(Topic);
         await base.Integration();
     }
-    
+
     public override async Task Performance()
     {
         await _eventStreamConsumer.Subscribe(Topic);
         await base.Performance();
     }
-
     protected override async Task Execute(CancellationToken cancellationToken)
     {
-        var @event = new TestTimestampEvent()
+        var now = SystemClock.Instance.GetCurrentInstant();
+        
+        var @event = new TestLocalDateEvent()
         {
             EventId = Guid.NewGuid(),
             Timestamp = DateTime.Now,
-            TestTimestamp = SystemClock.Instance.GetCurrentInstant()
+            TestDate = now.InUtc().Date
         };
 
         await _eventStreamProducer.ProduceAsync(Topic, @event, cancellationToken);
 
         var consumedEvent = _eventStreamConsumer.GetNext(cancellationToken);
         consumedEvent.Commit();
-        var result = consumedEvent.Event as TestTimestampEvent;
+        var result = consumedEvent.Event as TestLocalDateEvent;
         result.ShouldNotBeNull();
         result.EventId.ShouldBe(@event.EventId);
-        result.TestTimestamp.ShouldBe(@event.TestTimestamp);
+        result.TestDate.ShouldBe(@event.TestDate);
     }
 }

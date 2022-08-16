@@ -3,6 +3,7 @@ using Chr.Avro.Serialization;
 using Confluent.Kafka;
 using Confluent.Kafka.SyncOverAsync;
 using Confluent.SchemaRegistry;
+using Level79.Common.EventStreaming.Consumption.Deserialization;
 
 namespace Level79.Common.EventStreaming.Consumption;
 
@@ -29,7 +30,8 @@ public class EventStreamConsumer : IDisposable
 
         var deserializerBuilder = new BinaryDeserializerBuilder(
             BinaryDeserializerBuilder.CreateDefaultCaseBuilders()
-                .Prepend(builder => new InstantTimestampDeserializerBuilderCase())
+                .Prepend(_ => new InstantTimestampDeserializerBuilderCase())
+                .Prepend(_ => new LocalDateDeserializerBuilderCase())
                 .Prepend(builder => new ReflectionBinaryRecordDeserializerBuilderCase(builder))
         );
 

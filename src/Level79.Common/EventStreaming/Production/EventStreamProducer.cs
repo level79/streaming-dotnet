@@ -1,6 +1,7 @@
 using Confluent.Kafka;
 using Confluent.Kafka.SyncOverAsync;
 using Confluent.SchemaRegistry;
+using Level79.Common.EventStreaming.Production.Serialization;
 
 namespace Level79.Common.EventStreaming.Production;
 
