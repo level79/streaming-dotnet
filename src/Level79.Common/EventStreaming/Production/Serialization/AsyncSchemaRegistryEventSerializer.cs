@@ -18,22 +18,32 @@ public class AsyncSchemaRegistryEventSerializer<T> : IAsyncSerializer<T> where T
         _subject = typeof(T).FullName?.ToLowerInvariant() ?? "UnknownSubject";
 
         const TemporalBehavior temporalBehavior = TemporalBehavior.EpochMicroseconds;
-        
+
+        var schemaBuilderCases = new Func<ISchemaBuilder, ISchemaBuilderCase>[]
+        {
+            _ => new InstantSchemaBuilderCase(temporalBehavior),
+            _ => new LocalDateSchemaBuilderCase(temporalBehavior)
+        };
+
         var schemaBuilder = new SchemaBuilder(
-            SchemaBuilder.CreateDefaultCaseBuilders(temporalBehavior: temporalBehavior)
-            .Prepend(_ => new InstantSchemaBuilderCase(temporalBehavior))
-            .Prepend(_ => new LocalDateSchemaBuilderCase(temporalBehavior))
+            schemaBuilderCases.Concat(SchemaBuilder.CreateDefaultCaseBuilders(temporalBehavior: temporalBehavior))
         );
+
+        var serializerBuilderCases = new Func<IBinarySerializerBuilder, IBinarySerializerBuilderCase>[]
+        {
+            _ => new BinaryInstantSerializerBuilderCase(),
+            _ => new BinaryLocalDateSerializerBuilderCase()
+        };
 
         _serializerBuilder = new SchemaRegistrySerializerBuilder(
             schemaRegistry,
             schemaBuilder,
             serializerBuilder: new BinarySerializerBuilder(
-                BinarySerializerBuilder.CreateDefaultCaseBuilders()
-                .Prepend(_ => new BinaryInstantSerializerBuilderCase())
-                .Prepend(_ => new BinaryLocalDateSerializerBuilderCase())
-            ));
+                serializerBuilderCases.Concat(BinarySerializerBuilder.CreateDefaultCaseBuilders())
+            )
+        );
     }
+
     public async Task<byte[]> SerializeAsync(T data, SerializationContext context)
     {
         _serializer ??= await _serializerBuilder.Build<T>(_subject, AutomaticRegistrationBehavior.Always);

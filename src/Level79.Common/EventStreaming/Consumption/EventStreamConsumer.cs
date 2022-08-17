@@ -28,11 +28,15 @@ public class EventStreamConsumer : IDisposable
         
         var schemaRegistry = new CachedSchemaRegistryClient(schemaRegistryConfig);
 
+        var deserializerBuilderCases = new Func<IBinaryDeserializerBuilder, IBinaryDeserializerBuilderCase>[]
+        {
+            builder => new ReflectionBinaryRecordDeserializerBuilderCase(builder),
+            _ => new InstantTimestampDeserializerBuilderCase(),
+            _ => new LocalDateDeserializerBuilderCase(),
+        };
+        
         var deserializerBuilder = new BinaryDeserializerBuilder(
-            BinaryDeserializerBuilder.CreateDefaultCaseBuilders()
-                .Prepend(_ => new InstantTimestampDeserializerBuilderCase())
-                .Prepend(_ => new LocalDateDeserializerBuilderCase())
-                .Prepend(builder => new ReflectionBinaryRecordDeserializerBuilderCase(builder))
+            deserializerBuilderCases.Concat(BinaryDeserializerBuilder.CreateDefaultCaseBuilders())
         );
 
         _consumer = new ConsumerBuilder<string, IEvent>(consumerConfig)
