@@ -1,6 +1,9 @@
 infra:
 	docker compose up -d
 
+infra-down:
+	docker compose down --remove-orphans
+
 topics:
 	docker-compose exec broker kafka-topics --create --bootstrap-server broker:9092 --replication-factor 1 --partitions 1 --topic testtimestamp
 	docker-compose exec broker kafka-topics --create --bootstrap-server broker:9092 --replication-factor 1 --partitions 1 --topic testlocaldate
